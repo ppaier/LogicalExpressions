@@ -9,7 +9,7 @@
 
 #pragma once
 
-#include "LogicalAtom.h"
+#include "Term.h"
 
 #include <memory>
 #include <vector>
@@ -46,8 +46,8 @@ class CAtomExpressionBehavior :
     friend class CLogicalExpression<T>;
 
 private:
-    CLogicalAtom<T> m_atom1;
-    CLogicalAtom<T> m_atom2;
+    CTerm<T> m_atom1;
+    CTerm<T> m_atom2;
     std::function<bool(T, T)> m_comparer;
 
 public:
@@ -55,7 +55,7 @@ public:
 
 private:
     CAtomExpressionBehavior(void) {}
-    CAtomExpressionBehavior(const CLogicalAtom<T> &a1, const CLogicalAtom<T> &a2, std::function<bool(T, T)> f) :
+    CAtomExpressionBehavior(const CTerm<T> &a1, const CTerm<T> &a2, std::function<bool(T, T)> f) :
         m_atom1(a1), m_atom2(a2), m_comparer(f) {}
     virtual bool evaluate(const std::vector<T> &values) const
     {
@@ -72,7 +72,7 @@ class CSingleAtomExpressionBehavior :
     friend class CLogicalExpression<T>;
 
 private:
-    CLogicalAtom<T> m_atom;
+    CTerm<T> m_atom;
     std::function<bool(T)> m_comparer;
 
 public:
@@ -80,7 +80,7 @@ public:
 
 private:
     CSingleAtomExpressionBehavior(void) {}
-    CSingleAtomExpressionBehavior(const CLogicalAtom<T> &a, std::function<bool(T)> f) :
+    CSingleAtomExpressionBehavior(const CTerm<T> &a, std::function<bool(T)> f) :
         m_atom(a), m_comparer(f) {}
     virtual bool evaluate(const std::vector<T> &values) const
     {

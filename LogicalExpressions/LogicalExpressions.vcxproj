@@ -79,8 +79,8 @@
     <Text Include="ReadMe.txt" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="LogicalAtom.h" />
-    <ClInclude Include="LogicalAtomBehavior.h" />
+    <ClInclude Include="Term.h" />
+    <ClInclude Include="TermBehavior.h" />
     <ClInclude Include="LogicalExpression.h" />
     <ClInclude Include="LogicalExpressionBehavior.h" />
     <ClInclude Include="stdafx.h" />

@@ -18,9 +18,9 @@ private:
     std::shared_ptr<CLogicalExpressionBehavior<T>> m_leBehavior;
 
 public:
-    CLogicalExpression(CLogicalAtom<T> la1, CLogicalAtom<T> la2, std::function<bool(T, T)> f) :
+    CLogicalExpression(CTerm<T> la1, CTerm<T> la2, std::function<bool(T, T)> f) :
         m_leBehavior(std::shared_ptr<CAtomExpressionBehavior<T>>(new CAtomExpressionBehavior<T>(la1, la2, f))) {}
-    CLogicalExpression(CLogicalAtom<T> la, std::function<bool(T)> f) :
+    CLogicalExpression(CTerm<T> la, std::function<bool(T)> f) :
         m_leBehavior(std::shared_ptr<CSingleAtomExpressionBehavior<T>>(new CSingleAtomExpressionBehavior<T>(la, f))) {}
     CLogicalExpression(CLogicalExpression<T> le, std::function<bool(bool)> f) :
         m_leBehavior(std::shared_ptr<CModifiedExpressionBehavior<T>>(new CModifiedExpressionBehavior<T>(le.getBehavior(), f))) {}
@@ -86,39 +86,39 @@ std::vector<std::vector<bool>> evaluate(const std::vector<std::vector<T>> &value
 // standard comparisons of two logical atoms
 // -----------------------------------------------------------
 template <typename T>
-CLogicalExpression<T> operator<(CLogicalAtom<T> a, CLogicalAtom<T> b)
+CLogicalExpression<T> operator<(CTerm<T> a, CTerm<T> b)
 {
     return CLogicalExpression<T>(a, b, std::less<T>());
 }
 
 template <typename T>
-CLogicalExpression<T> operator<=(CLogicalAtom<T> a, CLogicalAtom<T> b)
+CLogicalExpression<T> operator<=(CTerm<T> a, CTerm<T> b)
 {
     return CLogicalExpression<T>(a, b, std::less_equal<T>());
 }
 
 template <typename T>
-CLogicalExpression<T> operator>(CLogicalAtom<T> a, CLogicalAtom<T> b)
+CLogicalExpression<T> operator>(CTerm<T> a, CTerm<T> b)
 {
     return CLogicalExpression<T>(a, b, std::greater<T>());
 }
 
 
 template <typename T>
-CLogicalExpression<T> operator>=(CLogicalAtom<T> a, CLogicalAtom<T> b)
+CLogicalExpression<T> operator>=(CTerm<T> a, CTerm<T> b)
 {
     return CLogicalExpression<T>(a, b, std::greater_equal<T>());
 }
 
 
 template <typename T>
-CLogicalExpression<T> operator==(CLogicalAtom<T> a, CLogicalAtom<T> b)
+CLogicalExpression<T> operator==(CTerm<T> a, CTerm<T> b)
 {
     return CLogicalExpression<T>(a, b, std::equal_to<T>());
 }
 
 template <typename T>
-CLogicalExpression<T> operator!=(CLogicalAtom<T> a, CLogicalAtom<T> b)
+CLogicalExpression<T> operator!=(CTerm<T> a, CTerm<T> b)
 {
     return CLogicalExpression<T>(a, b, std::not_equal_to<T>());
 }
@@ -128,77 +128,77 @@ CLogicalExpression<T> operator!=(CLogicalAtom<T> a, CLogicalAtom<T> b)
 // standard comparisons of a logical atom and a constant
 // -----------------------------------------------------------
 template <typename T>
-CLogicalExpression<T> operator<(CLogicalAtom<T> a, T val)
+CLogicalExpression<T> operator<(CTerm<T> a, T val)
 {
     return CLogicalExpression<T>(a, [val](double a){ return a < val; } );
 }
 
 template <typename T>
-CLogicalExpression<T> operator<=(CLogicalAtom<T> a, T val)
+CLogicalExpression<T> operator<=(CTerm<T> a, T val)
 {
     return CLogicalExpression<T>(a, [val](double a){ return a <= val; } );
 }
 
 
 template <typename T>
-CLogicalExpression<T> operator>(CLogicalAtom<T> a, T val)
+CLogicalExpression<T> operator>(CTerm<T> a, T val)
 {
     return CLogicalExpression<T>(a, [val](double a){ return a > val; } );
 }
 
 template <typename T>
-CLogicalExpression<T> operator>=(CLogicalAtom<T> a, T val)
+CLogicalExpression<T> operator>=(CTerm<T> a, T val)
 {
     return CLogicalExpression<T>(a, [val](double a){ return a >= val; } );
 }
 
 
 template <typename T>
-CLogicalExpression<T> operator==(CLogicalAtom<T> a, T val)
+CLogicalExpression<T> operator==(CTerm<T> a, T val)
 {
     return CLogicalExpression<T>(a, [val](double a){ return a == val; } );
 }
 
 template <typename T>
-CLogicalExpression<T> operator!=(CLogicalAtom<T> a, T val)
+CLogicalExpression<T> operator!=(CTerm<T> a, T val)
 {
     return CLogicalExpression<T>(a, [val](double a){ return a != val; } );
 }
 
 template <typename T>
-CLogicalExpression<T> operator<(T val, CLogicalAtom<T> b)
+CLogicalExpression<T> operator<(T val, CTerm<T> b)
 {
     return CLogicalExpression<T>(b, [val](double b){ return val < b; } );
 }
 
 template <typename T>
-CLogicalExpression<T> operator<=(T val, CLogicalAtom<T> b)
+CLogicalExpression<T> operator<=(T val, CTerm<T> b)
 {
     return CLogicalExpression<T>(b, [val](double b){ return val <= b; } );
 }
 
 
 template <typename T>
-CLogicalExpression<T> operator>(T val, CLogicalAtom<T> b)
+CLogicalExpression<T> operator>(T val, CTerm<T> b)
 {
     return CLogicalExpression<T>(b, [val](double b){ return val > b; } );
 }
 
 template <typename T>
-CLogicalExpression<T> operator>=(T val, CLogicalAtom<T> b)
+CLogicalExpression<T> operator>=(T val, CTerm<T> b)
 {
     return CLogicalExpression<T>(b, [val](double b){ return val >= b; } );
 }
 
 
 template <typename T>
-CLogicalExpression<T> operator==(T val, CLogicalAtom<T> b)
+CLogicalExpression<T> operator==(T val, CTerm<T> b)
 {
     return CLogicalExpression<T>(b, [val](double b){ return val == b; } );
 }
 
 template <typename T>
-CLogicalExpression<T> operator!=(T val, CLogicalAtom<T> b)
+CLogicalExpression<T> operator!=(T val, CTerm<T> b)
 {
     return CLogicalExpression<T>(b, [val](double b){ return val != b; } );
 }
