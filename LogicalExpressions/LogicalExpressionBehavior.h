@@ -84,7 +84,7 @@ private:
         m_atom(a), m_comparer(f) {}
     virtual bool evaluate(const std::vector<T> &values) const
     {
-        return m_comparer(m_atom.subst(values));
+        return m_comparer(m_atom.substitute(values));
     }
 };
 

@@ -33,6 +33,15 @@ public:
         return m_leBehavior->evaluate(values);
     }
 
+    std::vector<bool> evaluate(const std::vector<std::vector<T>> &valuesVec) const
+    {
+        std::vector<bool> evalVec;
+        for(auto & values : valuesVec)
+            evalVec.push_back(m_leBehavior->evaluate(values));
+
+        return std::move(evalVec);
+    }
+
 private:
     CLogicalExpression() {}
     CLogicalExpression(std::shared_ptr<CLogicalExpressionBehavior<T>> leb) : m_leBehavior(leb) {}
@@ -40,6 +49,33 @@ private:
 };
 
 
+// -----------------------------------------------------------
+// evaluate a bunch of expressions for one vector at once
+// -----------------------------------------------------------
+template <typename T>
+std::vector<bool> evaluate(const std::vector<T> &values,
+                           const std::vector<CLogicalExpression<T>> &expressions)
+{
+    std::vector<bool> evalVec;
+    for(auto & e : expressions)
+        evalVec.push_back(e.evaluate(values));
+
+    return std::move(evalVec);
+}
+
+// -----------------------------------------------------------
+// evaluate a bunch of expressions for varios vectors at once
+// -----------------------------------------------------------
+template <typename T>
+std::vector<std::vector<bool>> evaluate(const std::vector<std::vector<T>> &valuesVec,
+                           const std::vector<CLogicalExpression<T>> &expressions)
+{
+    std::vector<std::vector<bool>> evalVec;
+    for(auto & values : valuesVec)
+        evalVec.push_back(evaluate(values, expressions));
+
+    return std::move(evalVec);
+}
 
 // -----------------------------------------------------------
 // some predefined comparison operators to make usage of

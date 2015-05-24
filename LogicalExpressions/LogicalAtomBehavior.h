@@ -35,7 +35,7 @@ protected:
     CLogicalAtomBehavior() {}
 
 private:
-    virtual T subst(const std::vector<T> &values) const = 0;
+    virtual T substitute(const std::vector<T> &values) const = 0;
 };
 
 
@@ -56,7 +56,7 @@ public:
 private:
     CConstAtomBehavior() {}
     CConstAtomBehavior(T dConstVal) : m_dConst(dConstVal) {}
-    virtual T subst(const std::vector<T> &values) const { return m_dConst; }
+    virtual T substitute(const std::vector<T> &values) const { return m_dConst; }
 };
 
 
@@ -77,7 +77,7 @@ public:
 private:
     CVarAtomBehavior() {}
     CVarAtomBehavior(unsigned int idx) : m_nIdx(idx) {}
-    virtual T subst(const std::vector<T> &values) const
+    virtual T substitute(const std::vector<T> &values) const
     {
         if (m_nIdx < values.size())
             return values[m_nIdx];
@@ -104,9 +104,9 @@ private:
     CModifiedAtomBehavior() {}
     CModifiedAtomBehavior(std::shared_ptr<CLogicalAtomBehavior<T>> a, std::function<T(T)> f) :
         m_atom(a), m_modifier(f) {}
-    virtual T subst(const std::vector<T> &values) const
+    virtual T substitute(const std::vector<T> &values) const
     {
-        return m_modifier(m_atom->subst(values));
+        return m_modifier(m_atom->substitute(values));
     }
 };
 
@@ -130,8 +130,8 @@ private:
     CCombAtomBehavior() {}
     CCombAtomBehavior(std::shared_ptr<CLogicalAtomBehavior<T>> a1, std::shared_ptr<CLogicalAtomBehavior<T>> a2, std::function<T(T, T)> f) :
         m_atom1(a1), m_atom2(a2), m_combiner(f) {}
-    virtual T subst(const std::vector<T> &values) const
+    virtual T substitute(const std::vector<T> &values) const
     {
-        return m_combiner(m_atom1->subst(values), m_atom2->subst(values));
+        return m_combiner(m_atom1->substitute(values), m_atom2->substitute(values));
     }
 };

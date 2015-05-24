@@ -51,39 +51,35 @@ int main(int argc, char* argv[])
 
     std::vector<double> values1 = { 1, 2, 21, 21 };
     std::vector<double> values2 = { 3, 6, 5.1, 5 };
+    std::vector<std::vector<double>> valuesVec = {values1, values2};
 
-    auto val1res1 = exp.evaluate(values1);
-    auto val1res2 = cX.subst(values1);
-    auto val1res3 = cY.subst(values1);
-    auto val1res4 = newFeat.subst(values1);
-    auto val1res5 = newFeat2.subst(values1);
-    auto val1res6 = newFeat3.subst(values1);
-    auto val1res7 = newFeat4.subst(values1);
+    std::vector<CLogicalAtom<double>> atoms = {cX, cY, newFeat, newFeat2, newFeat3, newFeat4};
+    std::vector<CLogicalExpression<double>> expressions = {exp, exp1, exp2};
 
-    auto val2res1 = exp.evaluate(values2);
-    auto val2res2 = cX.subst(values2);
-    auto val2res3 = cY.subst(values2);
-    auto val2res4 = newFeat.subst(values2);
-    auto val2res5 = newFeat2.subst(values2);
-    auto val2res6 = newFeat3.subst(values2);
-    auto val2res7 = newFeat4.subst(values2);
+    std::vector<std::vector<double>> substResults = substitute(valuesVec, atoms);
+    std::vector<std::vector<bool>> evalResults = evaluate(valuesVec, expressions);
 
-    std::cout << "Evaluate exp for values1: " << val1res1 << std::endl;
-    std::cout << "cx value: " << val1res2 << std::endl;
-    std::cout << "cy value: " << val1res3 << std::endl;
-    std::cout << "New Feat value: " << val1res4 << std::endl;
-    std::cout << "New Feat 2 value: " << val1res5 << std::endl;
-    std::cout << "New Feat 3 value: " << val1res6 << std::endl;
-    std::cout << "New Feat 4 value: " << val1res7 << std::endl;
+    std::cout << "Results for values1" << std::endl;
+    std::cout << "Evaluate exp: " << evalResults[0][0] << std::endl;
+    std::cout << "Evaluate exp1: " << evalResults[0][1] << std::endl;
+    std::cout << "Evaluate exp2: " << evalResults[0][2] << std::endl;
+    std::cout << "cx value: " << substResults[0][0] << std::endl;
+    std::cout << "cy value: " << substResults[0][1] << std::endl;
+    std::cout << "New Feat value: " << substResults[0][2] << std::endl;
+    std::cout << "New Feat 2 value: " << substResults[0][3] << std::endl;
+    std::cout << "New Feat 3 value: " << substResults[0][4] << std::endl;
+    std::cout << "New Feat 4 value: " << substResults[0][5] << std::endl;
 
-    std::cout << "Evaluate exp for values2: " << val2res1 << std::endl;
-    std::cout << "cx value: " << val2res2 << std::endl;
-    std::cout << "cy value: " << val2res3 << std::endl;
-    std::cout << "New Feat value: " << val2res4 << std::endl;
-    std::cout << "New Feat 2 value: " << val2res5 << std::endl;
-    std::cout << "New Feat 3 value: " << val2res6 << std::endl;
-    std::cout << "New Feat 4 value: " << val2res7 << std::endl;
-
+    std::cout << "Results for values2" << std::endl;
+    std::cout << "Evaluate exp: " << evalResults[1][0] << std::endl;
+    std::cout << "Evaluate exp1: " << evalResults[1][1] << std::endl;
+    std::cout << "Evaluate exp2: " << evalResults[1][2] << std::endl;
+    std::cout << "cx value: " << substResults[1][0] << std::endl;
+    std::cout << "cy value: " << substResults[1][1] << std::endl;
+    std::cout << "New Feat value: " << substResults[1][2] << std::endl;
+    std::cout << "New Feat 2 value: " << substResults[1][3] << std::endl;
+    std::cout << "New Feat 3 value: " << substResults[1][4] << std::endl;
+    std::cout << "New Feat 4 value: " << substResults[1][5] << std::endl;
 
 	return 0;
 }
