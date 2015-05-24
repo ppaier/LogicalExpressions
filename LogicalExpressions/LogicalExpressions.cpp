@@ -11,7 +11,7 @@
 #include <string>
 
 
-int _tmain(int argc, _TCHAR* argv[])
+int main(int argc, char** argv[])
 {		
     // define where to find certain features
     CLogicalAtom<double> minX  = CLogicalAtom<double>::CreateVarAtom(0);
