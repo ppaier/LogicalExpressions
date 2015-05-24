@@ -2,57 +2,62 @@
 // Logical Atom interface class
 // Responsibility: Philipp Paier
 //
-// DESCRIPTION: 
+// DESCRIPTION:
 // A logical atom must implement a subst method, that gets a
-// vector of values and returns one value (not necessarily 
+// vector of values and returns one value (not necessarily
 // out of the vector)
 // -----------------------------------------------------------
-
+// -----------------------------------------------------------
+// LogicalAtom class
+// Responsibility: Philipp Paier
+//
+// DESCRIPTION:
+//
+//
+// -----------------------------------------------------------
 
 #pragma once
+
 #include "LogicalAtomBehavior.h"
 
-template <typename T> 
-class CLogicalAtom
+template <typename T>
+class CLogicalAtom final
 {
+private:
+    std::shared_ptr<CLogicalAtomBehavior<T>> m_laBehavior;
+
 public:
-    CLogicalAtom(std::shared_ptr<CLogicalAtomBehavior<T>> lab) : m_laBehavior(lab) {}
-
-    CLogicalAtom(CLogicalAtom<T> a, CLogicalAtom<T> b, std::function<T(T, T)> f) : 
-        m_laBehavior(std::make_shared<CCombAtomBehavior<T>>(a.getBehavior(), b.getBehavior(), f)) {}
-
+    CLogicalAtom(CLogicalAtom<T> a, CLogicalAtom<T> b, std::function<T(T, T)> f) :
+        m_laBehavior(std::shared_ptr<CCombAtomBehavior<T>>(new CCombAtomBehavior<T>(a.getBehavior(), b.getBehavior(), f))) {}
     CLogicalAtom(CLogicalAtom<T> a, std::function<T(T)> f) :
-        m_laBehavior(std::make_shared<CModifiedAtomBehavior<T>>(a.getBehavior(), f)) {}
+        m_laBehavior(std::shared_ptr<CModifiedAtomBehavior<T>>(new CModifiedAtomBehavior<T>(a.getBehavior(), f))) {}
+    ~CLogicalAtom() {}
 
     static CLogicalAtom<T> CreateConstAtom(T val)
     {
-        return CLogicalAtom<T>(std::make_shared<CConstAtomBehavior<T>>(val));
+        return CLogicalAtom<T>(std::shared_ptr<CConstAtomBehavior<T>>(new CConstAtomBehavior<T>(val)));
     }
 
     static CLogicalAtom<T> CreateVarAtom(unsigned int idx)
     {
-        return CLogicalAtom<T>(std::make_shared<CVarAtomBehavior<T>>(idx));
+        return CLogicalAtom<T>(std::shared_ptr<CVarAtomBehavior<T>>(new CVarAtomBehavior<T>(idx)));
     }
 
-
-    virtual ~CLogicalAtom() {}
-
-    virtual T subst(const std::vector<T> &values) const
+    T subst(const std::vector<T> &values) const
     {
         return m_laBehavior->subst(values);
     }
 
-
 private:
     CLogicalAtom() {}
-    virtual std::shared_ptr<CLogicalAtomBehavior<T>> getBehavior() const { return m_laBehavior; }
+    CLogicalAtom(std::shared_ptr<CLogicalAtomBehavior<T>> lab) : m_laBehavior(lab) {}
 
-    std::shared_ptr<CLogicalAtomBehavior<T>> m_laBehavior;
+    std::shared_ptr<CLogicalAtomBehavior<T>> getBehavior() const { return m_laBehavior; }
 };
 
 
 
-template <typename T> 
+template <typename T>
 CLogicalAtom<T> operator+(CLogicalAtom<T> a, CLogicalAtom<T> b)
 {
     return CLogicalAtom<T>(a, b, std::plus<T>());
@@ -106,7 +111,6 @@ CLogicalAtom<T> operator-(T val, CLogicalAtom<T> b)
     return CLogicalAtom<T>(b, [val](double b) { return val - b; });
 }
 
-
 template <typename T>
 CLogicalAtom<T> operator*(CLogicalAtom<T> a, T val)
 {
@@ -118,7 +122,6 @@ CLogicalAtom<T> operator*(T val, CLogicalAtom<T> b)
 {
     return CLogicalAtom<T>(b, [val](double b) { return val * b; });
 }
-
 
 template <typename T>
 CLogicalAtom<T> operator/(CLogicalAtom<T> a, T val)

@@ -1,41 +1,48 @@
+// -----------------------------------------------------------
+// LogicalExpression class
+// Responsibility: Philipp Paier
+//
+// DESCRIPTION:
+//
+//
+// -----------------------------------------------------------
 
 #pragma once
+
 #include "LogicalExpressionBehavior.h"
 
-
 template <typename T>
-class CLogicalExpression
+class CLogicalExpression final
 {
+private:
+    std::shared_ptr<CLogicalExpressionBehavior<T>> m_leBehavior;
+
 public:
-    CLogicalExpression(std::shared_ptr<CLogicalExpressionBehavior<T>> leb) : m_leBehavior(leb) {}
-
     CLogicalExpression(CLogicalAtom<T> la1, CLogicalAtom<T> la2, std::function<bool(T, T)> f) :
-        m_leBehavior(std::make_shared<CAtomExpressionBehavior<T>>(la1, la2, f)) {}
-
+        m_leBehavior(std::shared_ptr<CAtomExpressionBehavior<T>>(new CAtomExpressionBehavior<T>(la1, la2, f))) {}
+    CLogicalExpression(CLogicalAtom<T> la, std::function<bool(T)> f) :
+        m_leBehavior(std::shared_ptr<CSingleAtomExpressionBehavior<T>>(new CSingleAtomExpressionBehavior<T>(la, f))) {}
     CLogicalExpression(CLogicalExpression<T> le, std::function<bool(bool)> f) :
-        m_leBehavior(std::make_shared<CModifiedExpressionBehavior<T>>(le.getBehavior(), f)) {}
-
+        m_leBehavior(std::shared_ptr<CModifiedExpressionBehavior<T>>(new CModifiedExpressionBehavior<T>(le.getBehavior(), f))) {}
     CLogicalExpression(CLogicalExpression<T> le1, CLogicalExpression<T> le2, std::function<bool(bool, bool)> f) :
-        m_leBehavior(std::make_shared<CCombExpressionBehavior<T>>(le1.getBehavior(), le2.getBehavior(), f)) {}
-    
-    virtual ~CLogicalExpression() {}
+        m_leBehavior(std::shared_ptr<CCombExpressionBehavior<T>>(new CCombExpressionBehavior<T>(le1.getBehavior(), le2.getBehavior(), f))) {}
+    ~CLogicalExpression() {}
 
-    virtual bool evaluate(const std::vector<T> &values) const
+    bool evaluate(const std::vector<T> &values) const
     {
         return m_leBehavior->evaluate(values);
     }
-    
+
 private:
     CLogicalExpression() {}
-    virtual std::shared_ptr<CLogicalExpressionBehavior<T>> getBehavior() const { return m_leBehavior; }
-
-    std::shared_ptr<CLogicalExpressionBehavior<T>> m_leBehavior;
+    CLogicalExpression(std::shared_ptr<CLogicalExpressionBehavior<T>> leb) : m_leBehavior(leb) {}
+    std::shared_ptr<CLogicalExpressionBehavior<T>> getBehavior() const { return m_leBehavior; }
 };
 
 
 
 // -----------------------------------------------------------
-// some predefined comparison operators to make usage of 
+// some predefined comparison operators to make usage of
 // logical expressions easier
 // -----------------------------------------------------------
 
@@ -84,93 +91,80 @@ CLogicalExpression<T> operator!=(CLogicalAtom<T> a, CLogicalAtom<T> b)
 // -----------------------------------------------------------
 // standard comparisons of a logical atom and a constant
 // -----------------------------------------------------------
-
 template <typename T>
 CLogicalExpression<T> operator<(CLogicalAtom<T> a, T val)
 {
-    CLogicalAtom<T> b = CLogicalAtom<T>::CreateConstAtom(val);
-    return a<b;
+    return CLogicalExpression<T>(a, [val](double a){ return a < val; } );
 }
 
 template <typename T>
 CLogicalExpression<T> operator<=(CLogicalAtom<T> a, T val)
 {
-    CLogicalAtom<T> b = CLogicalAtom<T>::CreateConstAtom(val);
-    return a <= b;
+    return CLogicalExpression<T>(a, [val](double a){ return a <= val; } );
 }
 
 
 template <typename T>
 CLogicalExpression<T> operator>(CLogicalAtom<T> a, T val)
 {
-    CLogicalAtom<T> b = CLogicalAtom<T>::CreateConstAtom(val);
-    return a>b;
+    return CLogicalExpression<T>(a, [val](double a){ return a > val; } );
 }
 
 template <typename T>
 CLogicalExpression<T> operator>=(CLogicalAtom<T> a, T val)
 {
-    CLogicalAtom<T> b = CLogicalAtom<T>::CreateConstAtom(val);
-    return a >= b;
+    return CLogicalExpression<T>(a, [val](double a){ return a >= val; } );
 }
 
 
 template <typename T>
 CLogicalExpression<T> operator==(CLogicalAtom<T> a, T val)
 {
-    CLogicalAtom<T> b = CLogicalAtom<T>::CreateConstAtom(val);
-    return a == b;
+    return CLogicalExpression<T>(a, [val](double a){ return a == val; } );
 }
 
 template <typename T>
 CLogicalExpression<T> operator!=(CLogicalAtom<T> a, T val)
 {
-    CLogicalAtom<T> b = CLogicalAtom<T>::CreateConstAtom(val);
-    return a != b;
+    return CLogicalExpression<T>(a, [val](double a){ return a != val; } );
 }
 
 template <typename T>
 CLogicalExpression<T> operator<(T val, CLogicalAtom<T> b)
 {
-    CLogicalAtom<T> a = CLogicalAtom<T>::CreateConstAtom(val);
-    return a<b;
+    return CLogicalExpression<T>(b, [val](double b){ return val < b; } );
 }
 
 template <typename T>
 CLogicalExpression<T> operator<=(T val, CLogicalAtom<T> b)
 {
-    CLogicalAtom<T> a = CLogicalAtom<T>::CreateConstAtom(val);
-    return a <= b;
+    return CLogicalExpression<T>(b, [val](double b){ return val <= b; } );
 }
 
 
 template <typename T>
 CLogicalExpression<T> operator>(T val, CLogicalAtom<T> b)
 {
-    CLogicalAtom<T> a = CLogicalAtom<T>::CreateConstAtom(val);
-    return a>b;
+    return CLogicalExpression<T>(b, [val](double b){ return val > b; } );
 }
 
 template <typename T>
 CLogicalExpression<T> operator>=(T val, CLogicalAtom<T> b)
 {
-    CLogicalAtom<T> a = CLogicalAtom<T>::CreateConstAtom(val);
-    return a >= b;
+    return CLogicalExpression<T>(b, [val](double b){ return val >= b; } );
 }
 
 
 template <typename T>
 CLogicalExpression<T> operator==(T val, CLogicalAtom<T> b)
 {
-    CLogicalAtom<T> a = CLogicalAtom<T>::CreateConstAtom(val);
-    return a == b;
+    return CLogicalExpression<T>(b, [val](double b){ return val == b; } );
 }
 
 template <typename T>
 CLogicalExpression<T> operator!=(T val, CLogicalAtom<T> b)
 {
-    CLogicalAtom<T> a = CLogicalAtom<T>::CreateConstAtom(val);
-    return a != b;
+    return CLogicalExpression<T>(b, [val](double b){ return val != b; } );
 }
 
 
