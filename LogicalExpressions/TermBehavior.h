@@ -1,5 +1,5 @@
 // -----------------------------------------------------------
-// LogicalAtomBehavior classes
+// TermBehavior classes
 // Responsibility: Philipp Paier
 //
 // DESCRIPTION:
@@ -94,7 +94,7 @@ class CModifiedTermBehavior :
     friend class CTerm<T>;
 
 private:
-    std::shared_ptr<CTermBehavior<T>> m_atom;
+    std::shared_ptr<CTermBehavior<T>> m_term;
     std::function<T(T)> m_modifier;
 
 public:
@@ -102,11 +102,11 @@ public:
 
 private:
     CModifiedTermBehavior() {}
-    CModifiedTermBehavior(std::shared_ptr<CTermBehavior<T>> a, std::function<T(T)> f) :
-        m_atom(a), m_modifier(f) {}
+    CModifiedTermBehavior(std::shared_ptr<CTermBehavior<T>> t, std::function<T(T)> f) :
+        m_term(t), m_modifier(f) {}
     virtual T substitute(const std::vector<T> &values) const
     {
-        return m_modifier(m_atom->substitute(values));
+        return m_modifier(m_term->substitute(values));
     }
 };
 
@@ -119,8 +119,8 @@ class CCombinedTermBehavior :
     friend class CTerm<T>;
 
 private:
-    std::shared_ptr<CTermBehavior<T>> m_atom1;
-    std::shared_ptr<CTermBehavior<T>> m_atom2;
+    std::shared_ptr<CTermBehavior<T>> m_term1;
+    std::shared_ptr<CTermBehavior<T>> m_term2;
     std::function<T(T, T)> m_combiner;
 
 public:
@@ -128,10 +128,10 @@ public:
 
 private:
     CCombinedTermBehavior() {}
-    CCombinedTermBehavior(std::shared_ptr<CTermBehavior<T>> a1, std::shared_ptr<CTermBehavior<T>> a2, std::function<T(T, T)> f) :
-        m_atom1(a1), m_atom2(a2), m_combiner(f) {}
+    CCombinedTermBehavior(std::shared_ptr<CTermBehavior<T>> t1, std::shared_ptr<CTermBehavior<T>> t2, std::function<T(T, T)> f) :
+        m_term1(t1), m_term2(t2), m_combiner(f) {}
     virtual T substitute(const std::vector<T> &values) const
     {
-        return m_combiner(m_atom1->substitute(values), m_atom2->substitute(values));
+        return m_combiner(m_term1->substitute(values), m_term2->substitute(values));
     }
 };

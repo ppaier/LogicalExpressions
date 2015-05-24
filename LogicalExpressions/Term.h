@@ -1,5 +1,5 @@
 // -----------------------------------------------------------
-// LogicalAtom class
+// Term class
 // Responsibility: Philipp Paier
 //
 // DESCRIPTION:
@@ -17,13 +17,13 @@ template <typename T>
 class CTerm final
 {
 private:
-    std::shared_ptr<CTermBehavior<T>> m_laBehavior;
+    std::shared_ptr<CTermBehavior<T>> m_termBehavior;
 
 public:
     CTerm(CTerm<T> a, CTerm<T> b, std::function<T(T, T)> f) :
-        m_laBehavior(std::shared_ptr<CCombinedTermBehavior<T>>(new CCombinedTermBehavior<T>(a.getBehavior(), b.getBehavior(), f))) {}
+        m_termBehavior(std::shared_ptr<CCombinedTermBehavior<T>>(new CCombinedTermBehavior<T>(a.getBehavior(), b.getBehavior(), f))) {}
     CTerm(CTerm<T> a, std::function<T(T)> f) :
-        m_laBehavior(std::shared_ptr<CModifiedTermBehavior<T>>(new CModifiedTermBehavior<T>(a.getBehavior(), f))) {}
+        m_termBehavior(std::shared_ptr<CModifiedTermBehavior<T>>(new CModifiedTermBehavior<T>(a.getBehavior(), f))) {}
     ~CTerm() {}
 
     static CTerm<T> CreateConstTerm(T val)
@@ -38,42 +38,42 @@ public:
 
     T substitute(const std::vector<T> &values) const
     {
-        return m_laBehavior->substitute(values);
+        return m_termBehavior->substitute(values);
     }
 
     std::vector<T> substitute(const std::vector<std::vector<T>> &valuesVec) const
     {
         std::vector<T> substVec;
         for(auto & values : valuesVec)
-            substVec.push_back(m_laBehavior->substitute(values));
+            substVec.push_back(m_termBehavior->substitute(values));
 
         return std::move(substVec);
     }
 
 private:
     CTerm() {}
-    CTerm(std::shared_ptr<CTermBehavior<T>> lab) : m_laBehavior(lab) {}
+    CTerm(std::shared_ptr<CTermBehavior<T>> tb) : m_termBehavior(tb) {}
 
-    std::shared_ptr<CTermBehavior<T>> getBehavior() const { return m_laBehavior; }
+    std::shared_ptr<CTermBehavior<T>> getBehavior() const { return m_termBehavior; }
 };
 
 template <typename T>
-std::vector<T> substitute(std::vector<T> values, std::vector<CTerm<T>> atoms)
+std::vector<T> substitute(std::vector<T> values, std::vector<CTerm<T>> terms)
 {
     std::vector<T> substVec;
-    for(auto & a : atoms)
-        substVec.push_back(a.substitute(values));
+    for(auto & t : terms)
+        substVec.push_back(t.substitute(values));
 
     return std::move(substVec);
 }
 
 template <typename T>
 std::vector<std::vector<T>> substitute(const std::vector<std::vector<T>> &valuesVec,
-                           const std::vector<CTerm<T>> &atoms)
+                           const std::vector<CTerm<T>> &terms)
 {
     std::vector<std::vector<T>> substVec;
     for(auto & values : valuesVec)
-        substVec.push_back(substitute(values, atoms));
+        substVec.push_back(substitute(values, terms));
 
     return std::move(substVec);
 }

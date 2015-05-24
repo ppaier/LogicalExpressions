@@ -32,11 +32,11 @@
 			<Add option="-Wall" />
 			<Add option="-fexceptions" />
 		</Compiler>
-		<Unit filename="LogicalAtom.h" />
-		<Unit filename="LogicalAtomBehavior.h" />
 		<Unit filename="LogicalExpression.h" />
 		<Unit filename="LogicalExpressionBehavior.h" />
 		<Unit filename="LogicalExpressions.cpp" />
+		<Unit filename="Term.h" />
+		<Unit filename="TermBehavior.h" />
 		<Extensions>
 			<code_completion />
 			<envvars />

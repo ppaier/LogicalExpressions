@@ -15,7 +15,7 @@
 #include <vector>
 
 template <typename T> class CAtomExpressionBehavior;
-template <typename T> class CCingleAtomExpressionBehavior;
+template <typename T> class CSingleAtomExpressionBehavior;
 template <typename T> class CModifiedExpressionBehavior;
 template <typename T> class CCombExpressionBehavior;
 template <typename T> class CLogicalExpression;
