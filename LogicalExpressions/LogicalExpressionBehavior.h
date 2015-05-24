@@ -14,17 +14,17 @@
 #include <memory>
 #include <vector>
 
-template <typename T> class CAtomExpressionBehavior;
-template <typename T> class CSingleAtomExpressionBehavior;
+template <typename T> class CCombinedTermExpressionBehavior;
+template <typename T> class CSingleTermExpressionBehavior;
 template <typename T> class CModifiedExpressionBehavior;
-template <typename T> class CCombExpressionBehavior;
+template <typename T> class CCombinedExpressionBehavior;
 template <typename T> class CLogicalExpression;
 
 template <typename T>
 class CLogicalExpressionBehavior
 {
     friend class CModifiedExpressionBehavior<T>;
-    friend class CCombExpressionBehavior<T>;
+    friend class CCombinedExpressionBehavior<T>;
     friend class CLogicalExpression<T>;
 
 public:
@@ -38,11 +38,11 @@ private:
 };
 
 template <typename T>
-class CAtomExpressionBehavior :
+class CCombinedTermExpressionBehavior :
     public CLogicalExpressionBehavior<T>
 {
     friend class CModifiedExpressionBehavior<T>;
-    friend class CCombExpressionBehavior<T>;
+    friend class CCombinedExpressionBehavior<T>;
     friend class CLogicalExpression<T>;
 
 private:
@@ -51,11 +51,11 @@ private:
     std::function<bool(T, T)> m_comparer;
 
 public:
-    virtual ~CAtomExpressionBehavior(void){}
+    virtual ~CCombinedTermExpressionBehavior(void){}
 
 private:
-    CAtomExpressionBehavior(void) {}
-    CAtomExpressionBehavior(const CTerm<T> &a1, const CTerm<T> &a2, std::function<bool(T, T)> f) :
+    CCombinedTermExpressionBehavior(void) {}
+    CCombinedTermExpressionBehavior(const CTerm<T> &a1, const CTerm<T> &a2, std::function<bool(T, T)> f) :
         m_atom1(a1), m_atom2(a2), m_comparer(f) {}
     virtual bool evaluate(const std::vector<T> &values) const
     {
@@ -64,11 +64,11 @@ private:
 };
 
 template <typename T>
-class CSingleAtomExpressionBehavior :
+class CSingleTermExpressionBehavior :
     public CLogicalExpressionBehavior<T>
 {
     friend class CModifiedExpressionBehavior<T>;
-    friend class CCombExpressionBehavior<T>;
+    friend class CCombinedExpressionBehavior<T>;
     friend class CLogicalExpression<T>;
 
 private:
@@ -76,11 +76,11 @@ private:
     std::function<bool(T)> m_comparer;
 
 public:
-    virtual ~CSingleAtomExpressionBehavior(void){}
+    virtual ~CSingleTermExpressionBehavior(void){}
 
 private:
-    CSingleAtomExpressionBehavior(void) {}
-    CSingleAtomExpressionBehavior(const CTerm<T> &a, std::function<bool(T)> f) :
+    CSingleTermExpressionBehavior(void) {}
+    CSingleTermExpressionBehavior(const CTerm<T> &a, std::function<bool(T)> f) :
         m_atom(a), m_comparer(f) {}
     virtual bool evaluate(const std::vector<T> &values) const
     {
@@ -93,7 +93,7 @@ template <typename T>
 class CModifiedExpressionBehavior :
     public CLogicalExpressionBehavior<T>
 {
-    friend class CCombExpressionBehavior<T>;
+    friend class CCombinedExpressionBehavior<T>;
     friend class CLogicalExpression<T>;
 
 private:
@@ -115,7 +115,7 @@ private:
 
 
 template <typename T>
-class CCombExpressionBehavior :
+class CCombinedExpressionBehavior :
     public CLogicalExpressionBehavior<T>
 {
     friend class CModifiedExpressionBehavior<T>;
@@ -127,11 +127,11 @@ private:
     std::function<bool(bool, bool)> m_combiner;
 
 public:
-    virtual ~CCombExpressionBehavior(void){}
+    virtual ~CCombinedExpressionBehavior(void){}
 
 private:
-    CCombExpressionBehavior(void) {}
-    CCombExpressionBehavior(std::shared_ptr<CLogicalExpressionBehavior<T>> e1,
+    CCombinedExpressionBehavior(void) {}
+    CCombinedExpressionBehavior(std::shared_ptr<CLogicalExpressionBehavior<T>> e1,
                             std::shared_ptr<CLogicalExpressionBehavior<T>> e2,
                             std::function<bool(bool, bool)> f) :
                             m_expr1(e1), m_expr2(e2), m_combiner(f) {}

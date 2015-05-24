@@ -19,13 +19,13 @@ private:
 
 public:
     CLogicalExpression(CTerm<T> la1, CTerm<T> la2, std::function<bool(T, T)> f) :
-        m_leBehavior(std::shared_ptr<CAtomExpressionBehavior<T>>(new CAtomExpressionBehavior<T>(la1, la2, f))) {}
+        m_leBehavior(std::shared_ptr<CCombinedTermExpressionBehavior<T>>(new CCombinedTermExpressionBehavior<T>(la1, la2, f))) {}
     CLogicalExpression(CTerm<T> la, std::function<bool(T)> f) :
-        m_leBehavior(std::shared_ptr<CSingleAtomExpressionBehavior<T>>(new CSingleAtomExpressionBehavior<T>(la, f))) {}
+        m_leBehavior(std::shared_ptr<CSingleTermExpressionBehavior<T>>(new CSingleTermExpressionBehavior<T>(la, f))) {}
     CLogicalExpression(CLogicalExpression<T> le, std::function<bool(bool)> f) :
         m_leBehavior(std::shared_ptr<CModifiedExpressionBehavior<T>>(new CModifiedExpressionBehavior<T>(le.getBehavior(), f))) {}
     CLogicalExpression(CLogicalExpression<T> le1, CLogicalExpression<T> le2, std::function<bool(bool, bool)> f) :
-        m_leBehavior(std::shared_ptr<CCombExpressionBehavior<T>>(new CCombExpressionBehavior<T>(le1.getBehavior(), le2.getBehavior(), f))) {}
+        m_leBehavior(std::shared_ptr<CCombinedExpressionBehavior<T>>(new CCombinedExpressionBehavior<T>(le1.getBehavior(), le2.getBehavior(), f))) {}
     ~CLogicalExpression() {}
 
     bool evaluate(const std::vector<T> &values) const
