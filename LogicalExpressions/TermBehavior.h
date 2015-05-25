@@ -11,16 +11,21 @@
 
 #include <vector>
 #include <memory>
-#include <functional>
 #include <stdexcept>
 
-
+// -----------------------------------------------------------
+// necessary forward declarations
+// -----------------------------------------------------------
 template <typename T> class CTerm;
 template <typename T> class CConstTermBehavior;
 template <typename T> class CVariableTermBehavior;
 template <typename T> class CModifiedTermBehavior;
 template <typename T> class CCombinedTermBehavior;
 
+
+// -----------------------------------------------------------
+// interface class for the behavior of a term
+// -----------------------------------------------------------
 template <typename T>
 class CTermBehavior
 {
@@ -39,6 +44,9 @@ private:
 };
 
 
+// -----------------------------------------------------------
+// constant term behavior (e.g. 3)
+// -----------------------------------------------------------
 template <typename T>
 class CConstTermBehavior :
     public CTermBehavior < T >
@@ -60,6 +68,9 @@ private:
 };
 
 
+// -----------------------------------------------------------
+// variable term behavior e.g. ( vector[3] representing x3 )
+// -----------------------------------------------------------
 template <typename T>
 class CVariableTermBehavior :
     public CTermBehavior<T>
@@ -69,23 +80,26 @@ class CVariableTermBehavior :
     friend class CTerm<T>;
 
 private:
-    unsigned int m_nIdx;
+    size_t m_nIdx;
 
 public:
     virtual ~CVariableTermBehavior(void){}
 
 private:
     CVariableTermBehavior() {}
-    CVariableTermBehavior(unsigned int idx) : m_nIdx(idx) {}
+    CVariableTermBehavior(size_t idx) : m_nIdx(idx) {}
     virtual T substitute(const std::vector<T> &values) const
     {
         if (m_nIdx < values.size())
             return values[m_nIdx];
         else
-            throw(std::out_of_range("Index out of bounds for subst in CVarAtom."));
+            throw(std::out_of_range("Index out of bounds for substitution in CTerm."));
     }
 };
 
+// -----------------------------------------------------------
+// modified term behavior (e.g. 3*term)
+// -----------------------------------------------------------
 template <typename T>
 class CModifiedTermBehavior :
     public CTermBehavior<T>
@@ -111,6 +125,9 @@ private:
 };
 
 
+// -----------------------------------------------------------
+// combined term behavior (e.g. term1+term2)
+// -----------------------------------------------------------
 template <typename T>
 class CCombinedTermBehavior :
     public CTermBehavior<T>
