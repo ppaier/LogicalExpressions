@@ -14,6 +14,9 @@
 #include <memory>
 #include <vector>
 
+namespace tc
+{
+
 template <typename T> class CCombinedTermExpressionBehavior;
 template <typename T> class CSingleTermExpressionBehavior;
 template <typename T> class CModifiedExpressionBehavior;
@@ -140,4 +143,6 @@ private:
         return m_combiner(m_expr1->evaluate(values), m_expr2->evaluate(values));
     }
 };
+
+}
 

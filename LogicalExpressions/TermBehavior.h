@@ -13,6 +13,8 @@
 #include <memory>
 #include <stdexcept>
 
+namespace tc
+{
 // -----------------------------------------------------------
 // necessary forward declarations
 // -----------------------------------------------------------
@@ -152,3 +154,5 @@ private:
         return m_combiner(m_term1->substitute(values), m_term2->substitute(values));
     }
 };
+
+}

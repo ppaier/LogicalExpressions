@@ -9,6 +9,7 @@
 #include <iostream>
 #include <string>
 
+using namespace tc;
 
 int main(int argc, char* argv[])
 {

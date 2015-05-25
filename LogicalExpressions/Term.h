@@ -11,6 +11,10 @@
 
 #include "TermBehavior.h"
 
+
+
+namespace tc
+{
 // -----------------------------------------------------------
 // necessary forward declarations
 // -----------------------------------------------------------
@@ -249,3 +253,4 @@ CTerm<T> operator/(const T &val, const CTerm<T> &b)
     return CTerm<T>(b, [val](const T &b) { return val / b; });
 }
 
+}

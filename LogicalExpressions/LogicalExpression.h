@@ -11,6 +11,9 @@
 
 #include "LogicalExpressionBehavior.h"
 
+namespace tc
+{
+
 template <typename T>
 class CLogicalExpression final
 {
@@ -237,4 +240,6 @@ template <typename T>
 CLogicalExpression<T> operator!(CLogicalExpression<T> a)
 {
     return CLogicalExpression<T>(a, std::logical_not<bool>());
+}
+
 }
