@@ -4,6 +4,7 @@
 #include "stdafx.h"
 
 #include "LogicalExpression.h"
+#include "Features.h"
 
 #include <vector>
 #include <iostream>
@@ -14,10 +15,12 @@ using namespace tc;
 int main(int argc, char* argv[])
 {
     // define where to find certain features
-    CTerm<double> minX  = CTerm<double>::CreateVariableTerm(0);
-    CTerm<double> minY  = CTerm<double>::CreateVariableTerm(1);
-    CTerm<double> sizeX = CTerm<double>::CreateVariableTerm(2);
-    CTerm<double> sizeY = CTerm<double>::CreateVariableTerm(3);
+    CTerm<double> minX = CTerm<double>::CreateVariableTerm(MINX);
+    CTerm<double> minY = CTerm<double>::CreateVariableTerm(MINY);
+    CTerm<double> sizeX = CTerm<double>::CreateVariableTerm(SIZEX);
+    CTerm<double> sizeY = CTerm<double>::CreateVariableTerm(SIZEY);
+    auto maxX = minX + sizeX;
+    auto maxY = minY + sizeY;
 
     // define CoG feature
     CTerm<double> cX = minX + sizeX / 2.0;
@@ -40,7 +43,7 @@ int main(int argc, char* argv[])
 
     // now an indicator atom to select a feature
     CTerm<double> indicator(sizeX, sizeY, [](double a, double b) {
-        if (a>b)
+        if (a > b)
             return 1.0;
         else
             return 0.0;
@@ -51,10 +54,10 @@ int main(int argc, char* argv[])
 
     std::vector<double> values1 = { 1, 2, 21, 21 };
     std::vector<double> values2 = { 3, 6, 5.1, 5 };
-    std::vector<std::vector<double>> valuesVec = {values1, values2};
+    std::vector<std::vector<double>> valuesVec = { values1, values2 };
 
-    std::vector<CTerm<double>> atoms = {cX, cY, newFeat, newFeat2, newFeat3, newFeat4};
-    std::vector<CLogicalExpression<double>> expressions = {exp, exp1, exp2};
+    std::vector<CTerm<double>> atoms = { cX, cY, newFeat, newFeat2, newFeat3, newFeat4 };
+    std::vector<CLogicalExpression<double>> expressions = { exp, exp1, exp2 };
 
     std::vector<std::vector<double>> substResults = substitute(valuesVec, atoms);
     std::vector<std::vector<bool>> evalResults = evaluate(valuesVec, expressions);
@@ -81,6 +84,6 @@ int main(int argc, char* argv[])
     std::cout << "New Feat 3 value: " << substResults[1][4] << std::endl;
     std::cout << "New Feat 4 value: " << substResults[1][5] << std::endl;
 
-	return 0;
+    return 0;
 }
 
