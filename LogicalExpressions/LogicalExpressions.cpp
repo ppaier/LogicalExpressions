@@ -15,34 +15,34 @@ using namespace tc;
 int main(int argc, char* argv[])
 {
     // define where to find certain features
-    CTerm<double> minX = CTerm<double>::CreateVariableTerm(MINX);
-    CTerm<double> minY = CTerm<double>::CreateVariableTerm(MINY);
-    CTerm<double> sizeX = CTerm<double>::CreateVariableTerm(SIZEX);
-    CTerm<double> sizeY = CTerm<double>::CreateVariableTerm(SIZEY);
+    Term<double> minX = Term<double>::CreateVariableTerm(MINX);
+    Term<double> minY = Term<double>::CreateVariableTerm(MINY);
+    Term<double> sizeX = Term<double>::CreateVariableTerm(SIZEX);
+    Term<double> sizeY = Term<double>::CreateVariableTerm(SIZEY);
     auto maxX = minX + sizeX;
     auto maxY = minY + sizeY;
 
     // define CoG feature
-    CTerm<double> cX = minX + sizeX / 2.0;
-    CTerm<double> cY = minY + sizeY / 2.0;
+    Term<double> cX = minX + sizeX / 2.0;
+    Term<double> cY = minY + sizeY / 2.0;
 
     // define the logical expression
-    CLogicalExpression<double> exp1 = cX > 10.0;
-    CLogicalExpression<double> exp2 = cY > 10.0;
-    CLogicalExpression<double> exp = exp1 && exp2; // CoG must be after row 10 and column 10
+    LogicalExpression<double> exp1 = cX > 10.0;
+    LogicalExpression<double> exp2 = cY > 10.0;
+    LogicalExpression<double> exp = exp1 && exp2; // CoG must be after row 10 and column 10
 
     // just some examples how to define any new feature
     // combine features using a certain function
-    CTerm<double> newFeat(cX, cY, [](double a, double b) { return 3 * a + 5 * b; });
+    Term<double> newFeat(cX, cY, [](double a, double b) { return 3 * a + 5 * b; });
 
     // the same feature, but this time as a result of operator overloading
-    CTerm<double> newFeat2 = 3.0*cX + 5.0*cY;
+    Term<double> newFeat2 = 3.0*cX + 5.0*cY;
 
     // for more complex combinations operators are not sufficient
-    CTerm<double> newFeat3(newFeat, newFeat2, [](double a, double b) { return a*a + b*b; });
+    Term<double> newFeat3(newFeat, newFeat2, [](double a, double b) { return a*a + b*b; });
 
     // now an indicator atom to select a feature
-    CTerm<double> indicator(sizeX, sizeY, [](double a, double b) {
+    Term<double> indicator(sizeX, sizeY, [](double a, double b) {
         if (a > b)
             return 1.0;
         else
@@ -50,14 +50,14 @@ int main(int argc, char* argv[])
     });
 
     // the value of newFeat4 is now either minX or minY, depending if sizeX > sizeY
-    CTerm<double> newFeat4 = indicator * minX + (1.0 - indicator) * minY;
+    Term<double> newFeat4 = indicator * minX + (1.0 - indicator) * minY;
 
     std::vector<double> values1 = { 1, 2, 21, 21 };
     std::vector<double> values2 = { 3, 6, 5.1, 5 };
     std::vector<std::vector<double>> valuesVec = { values1, values2 };
 
-    std::vector<CTerm<double>> atoms = { cX, cY, newFeat, newFeat2, newFeat3, newFeat4 };
-    std::vector<CLogicalExpression<double>> expressions = { exp, exp1, exp2 };
+    std::vector<Term<double>> atoms = { cX, cY, newFeat, newFeat2, newFeat3, newFeat4 };
+    std::vector<LogicalExpression<double>> expressions = { exp, exp1, exp2 };
 
     std::vector<std::vector<double>> substResults = substitute(valuesVec, atoms);
     std::vector<std::vector<bool>> evalResults = evaluate(valuesVec, expressions);
